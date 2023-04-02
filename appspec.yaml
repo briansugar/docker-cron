@@ -1,0 +1,80 @@
+alerts:
+- rule: DEPLOYMENT_FAILED
+- rule: DOMAIN_FAILED
+domains:
+- domain: sugarrush.ai
+  type: PRIMARY
+  zone: sugarrush.ai
+- domain: www.sugarrush.ai
+  type: ALIAS
+  zone: sugarrush.ai
+envs:
+- key: APP_NAME
+  scope: RUN_AND_BUILD_TIME
+  value: SugaRush.ai
+- key: APP_ENV
+  scope: RUN_AND_BUILD_TIME
+  value: production
+- key: APP_KEY
+  scope: RUN_AND_BUILD_TIME
+  value: base64:pQc90ijmRLG5d1IAKgFyQJbxNH2cbgwRkw81lvT2vLE=
+- key: APP_DEBUG
+  scope: RUN_AND_BUILD_TIME
+  value: "true"
+- key: DB_CONNECTION
+  scope: RUN_AND_BUILD_TIME
+  value: mysql
+- key: DB_HOST
+  scope: RUN_AND_BUILD_TIME
+  value: poppin-db-do-user-12348996-0.b.db.ondigitalocean.com
+- key: DB_PORT
+  scope: RUN_AND_BUILD_TIME
+  value: "25060"
+- key: DB_DATABASE
+  scope: RUN_AND_BUILD_TIME
+  value: sugarrush
+- key: DB_USERNAME
+  scope: RUN_AND_BUILD_TIME
+  value: doadmin
+- key: DB_PASSWORD
+  scope: RUN_AND_BUILD_TIME
+  value: AVNS_PIwfl6w7i44piPZ9Igx
+- key: SSL_MODE
+  scope: RUN_AND_BUILD_TIME
+  value: required
+- key: MYSQL_ATTR_SSL_CA
+  scope: RUN_AND_BUILD_TIME
+  value: /workspace/storage/certs/ca-certificate.crt
+ingress:
+  rules:
+  - component:
+      name: sugarrush
+    match:
+      path:
+        prefix: /
+name: lobster-app
+region: nyc
+services:
+- build_command: npm run build
+  environment_slug: php
+  github:
+    branch: main
+    deploy_on_push: true
+    repo: briansugar/sugarrush
+  http_port: 8080
+  instance_count: 2
+  instance_size_slug: professional-xs
+  name: sugarrush
+  run_command: heroku-php-apache2 public/
+  source_dir: /
+workers:
+- dockerfile_path: Dockerfile
+  github:
+    branch: main
+    deploy_on_push: true
+    repo: DO-Solutions/Docker-cron
+  instance_count: 1
+  instance_size_slug: basic-xxs
+  name: Docker-cron
+  source_dir: /
+
